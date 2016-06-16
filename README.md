@@ -1,6 +1,7 @@
 # praat-speech-dyn
 Praat Scripts for the extraction of dynamic data in speech signals
 
+
 ## formantTrackingLongSound.praat
 
 ### Description
@@ -32,3 +33,4 @@ its task).
 
 This script will load all files in a directory and will extract formant frequencies in the middle of the file.
  
+
