@@ -63,20 +63,27 @@ sound$ = selected$("LongSound")
 ##sound$ = selected$("Sound")
 
 form Extract formant & f0 tracks from a TextGrid segmented Sound
-     comment You must select both a LongSound and a TextGrid before launching this script.
+     comment You must select both a LongSound
+     comment and a TextGrid before launching this script.
      ## comment You must select both a Sound and a TextGrid before launching this script.
      comment Request output for:
      boolean Formant_Tracks 1
      boolean Pitch_Track 1
-     boolean Nasality_Track_(A1,_A2,_A3) 1
-     comment Duration of each processed sub-signal (in second, higher needs more memory)
+     boolean Nasality_Track_(A1,_A2,_A3) 0
+     comment Duration of each processed sub-signal
+     comment (in seconds, higher needs more memory)
      natural maxtime 30
      comment Formant extraction
-     comment Select speaker (will control maximum formant frequency m = 5000 Hz, f = 5500 Hz, c = 8000 Hz)
-     optionmenu gender: 1
-     		button m
-		button f
-		button c
+##     comment Select speaker (will control maximum formant frequency m = 5000 Hz, f = 5500 Hz, c = 8000 Hz)
+##     optionmenu gender: 1
+##     		button m
+##		button f
+##		button c
+     comment Maximum number of Formants
+     natural maxNumFormants 5
+     comment Maximal frequency
+     comment (in Hz, base: m = 5000, w = 5500, c = 8000)
+     natural maxFreqFormants 5000
      comment Pitch extraction 
      comment Pitch parameters (min pitch in Hz, voicing threshold)
      		natural pitchfloor 75
@@ -107,7 +114,7 @@ windowlength = 0.025
 
 ## Formant analysis parameters	
 # Defaults: 5 50 1.5 5 0.000001
-maxnformants = 5
+maxNumFormants = 5
 preemph_cutoff = 50
 formantsdlim = 1.5
 maxiter = 5
@@ -115,13 +122,13 @@ tolerance = 0.000001
 	
 ## Formant frequency analysis depending on speaker sex (max formant
 ##   frequency = 5500 Hz for women, = 5000 Hz for men)
-if gender$ = "c"
-	maxformantfreq = 8000
-elif gender$ = "f"
-	maxformantfreq = 5500
-else
-	maxformantfreq = 5000
-endif
+##if gender$ = "c"
+##	maxFreqFormants = 8000
+##elif gender$ = "f"
+##	maxFreqFormants = 5500
+##else
+##	maxFreqFormants = 5000
+##endif
 	
 
 ## Pitch analysis parameters
@@ -260,7 +267,7 @@ if debug <> 1
 	# sound in order to limit its component frequencies to the maximum
 	# formant frequency we want to extract. This is done on the energy
 	# normalized sound.
-	targetSamplingFreq = 'maxformantfreq'*2
+	targetSamplingFreq = 'maxFreqFormants'*2
 	select Sound 'soundextract$'_norm
 	Resample... 'targetSamplingFreq' 50
 	select Sound 'soundextract$'_norm
@@ -269,16 +276,18 @@ if debug <> 1
 	Rename... 'soundextract$'_norm
 endif
 
-#### Formant extraction process -- Assez rapide... Insérer un test pour savoir si on le veut ?
+#### Formant extraction process -- Assez rapide...
+#### Insert an if-test to select execution or not?
 #### Comment peut-on revisualiser par la suite les résultats dans Praat ? Sauvegarder tracé dans un fichier ? Et le charger ensuite ?
 
 	select Sound 'soundextract$'
-	To Formant (burg)... 'timestep' 'maxnformants' 'maxformantfreq' 'windowlength' 'preemph_cutoff'
+	To Formant (burg)... 'timestep' 'maxNumFormants' 'maxFreqFormants' 'windowlength' 'preemph_cutoff'
 	# Time step; Max number of formants; maximum freq; window length (s); pre-emphasis cutoff; number of std-dev; max number of iterations; tolerance
-	#To Formant (robust)... 'timestep' 'maxnformants' 'maxformantfreq' 'windowlength' 'preemph_cutoff' 'formantsdlim' 'maxiter' 'tolerance'
+	#To Formant (robust)... 'timestep' 'maxNumFormants' 'maxFreqFormants' 'windowlength' 'preemph_cutoff' 'formantsdlim' 'maxiter' 'tolerance'
 	
 	
-#### Pitch extraction process -- Assez lent... Insérer un test pour savoir si on le veut ?
+#### Pitch extraction process -- Assez lent...
+#### Insert an if-test to select execution or not
 	select Sound 'soundextract$'
 	
 	## Sound selected, Periodicity, To Pitch : options = Time step, Pitch floor, Pitch ceiling
@@ -289,7 +298,8 @@ endif
 	#Down to PitchTier
 	#select PitchTier 'soundextract$'
 
-##### Preprocessing for a1, a2, a3 computation (cf. nasality, Marilyn Chen) -- Très rapide...
+#### Preprocessing for a1, a2, a3 computation (cf. nasality, Marilyn Chen) -- Très rapide...
+#### Insert an if-test to select execution or not
 
 	# LPC (autocorrelation) = analyse Vocal Tract (source-)filter coefficients
     	#########################
@@ -313,6 +323,7 @@ endif
 #### Processing formant frequencies and bandwidths from Formant object
 
 	for n to numberofintervals
+	      printline "'n' / 'numberofintervals'"
 		## Get the position of intervals and their associated labels
 		select TextGrid 'gridextract$'
 		## Get (string) label of interval number 'n' within tier number 'tier'
@@ -351,7 +362,7 @@ endif
 			## (index into an array)
 			frame_onset = round(frame_onset)
 			frame_offset = round(frame_offset)
-			printline "'frame_onset' / 'frame_offset'"
+			##printline "'frame_onset' / 'frame_offset'"
 
 			## Now we loop through each frame within the interval and extract
 			## the required acoustic information		
@@ -373,7 +384,9 @@ endif
 				b3 = Get bandwidth at time... 3 'frametime' Hertz Linear
 				#f1m = Get mean... 1 'frameno' 0.05 Hertz
 				#printline 'f1'
-				
+
+
+#### Insert an if-test in the main loop and create a specific function to select execution or not
 				## Extraction of pitch (f0 frequency): requires a Pitch object whose name
 				## is contained within the 'soundextract$' variable
 				select Pitch 'soundextract$'
@@ -389,6 +402,9 @@ endif
 				## printline 'f0'
 				#if 'f0' <> 0 (not --undefined--)		
 
+#### Insert an if-test in the main loop and create a specific function to select execution or not
+				## Extraction of Nasality evaluation on acoustics
+				##
 				## Just a trick waiting for an implementation
                         ## of finding --undefined-- f0 values because
                         ## we need to determine how to compute t0 only
@@ -442,7 +458,7 @@ endif
 				endif
 
 				## Frequency values are rounded for writing into the results file 
-				printline "'f1' / 'round(f1)'"
+				##printline "'f1' / 'round(f1)'"
 				f1 = round(f1)
 				f2 = round(f2)
 				f3 = round(f3)
