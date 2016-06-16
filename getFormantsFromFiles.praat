@@ -2,21 +2,29 @@
 ## extract various acoustic analyses from each of them at a specific
 ## time point, and then save this information to a text
 ## file. Obviously, this script should only be used for single segment
-## soundfiles (or similar situations).
+## soundfiles (or situations in which it is acceptable to consider that
+## the middle of the file is a good point to extract data).
 
-## Original Praat script by Kevin Ryan 9/05. Base script to open
-## multiple files in a directory
-
-## Modifications by Olivier Crouzet (Copyright 2016-2020)
+## This script was originally inspired by a script written by Kevin Ryan 9/05:
+## A base script designed to open multiple files in a directory. It is
+## available (as of 2016-06-16) at:
+## http://www.linguistics.ucla.edu/faciliti/facilities/acoustic/get-files.praat #
+##
+## The current script expands on this one along the following lines:
+##
 ## - 2016/05/27 - Open a directory with a graphical interface
 ## - 2016/05/27 - Apply formant extraction from the mid-time position in each file
 ## - 2016/05/27 - Save resulting (fixed 2-digits rounded) data to a CSV file
+##
+## Modifications by Olivier Crouzet (Copyright 2016-2020). You're free to use
+## it modify it and distribute it, either in its original or modified form,
+## provided # you cite the original author(s).
 
 
 
 ## TODO
 ## - Add pitch extraction, formant bandwidths, nasality parameters?, anything else?
-## - Control acoustic analysis parameters in the form (male / female / child, ...)
+## - Control acoustic analysis parameters in the form (maxFormantFreq, maxNumFormants, ...)
 
 
 ## USAGE:
