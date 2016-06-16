@@ -26,7 +26,7 @@ that these chunks don't overlap transcribed segments. It should therefore run
 on low resources computers (even though it may take a longer time to accomplish
 its task).
 
-## get-formants-from-files.praat
+## getFormantsFromFiles.praat
 
 ### Description
 
