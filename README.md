@@ -16,7 +16,7 @@ each observation being a time point within an utterance.
 
 ### Usage
 
-This script applies on a combined selection of LongSound and a corresponding
+This script applies on a combined selection of a LongSound and a corresponding
 TextGrid. It is designed to be applied on LongSounds only. It can easily be
 applied on short recordings, provided these recordings are opened as
 LongSounds.
