@@ -1,6 +1,3 @@
-
-debug = 1
-
 ## formantTrackingLongSound.praat
 ## 
 ## This script performs formant and f0 tracking on a recording that
@@ -48,14 +45,7 @@ debug = 1
 ## 	Results filename
 ##
 
-## NOTES IMPORTANTES !!!!
-
-## Régler la durée des fenêtres temporelles utilisées pour
-## l'extraction temporaire des données sonores.  Problème de plantage
-## du script au bout de quelques cycles. Lié à capacité mémoire mais
-## pas seulement (interruption non expliquée au bout de quelques
-## cycles). RESOLU ? L'interruption était liée au fait que certains objets 
-## n'étaient pas effacés et que ça remplissait la mémoire en excés.
+debug = 1
 
 ## Ajouter une option
 grid$ = selected$("TextGrid")
@@ -146,6 +136,7 @@ pitchceiling=600
 select LongSound 'sound$'
 ##select Sound 'sound$'
 duration = Get total duration
+duration = duration - 0.001
 printline "Total duration: 'duration'"
 
 iterations = 'duration'/'maxtime'
@@ -210,12 +201,14 @@ procedure formantTracking
 	## Extraction of the temporary Sound object
 	## printline "'startofsubset' 'endofsubset'"
 	select LongSound 'sound$'
-	## select Sound 'sound$'
-	Extract part... 'startofsubset' 'endofsubset' rectangular 1.0 1
+	Extract part... 'startofsubset' 'endofsubset' rectangular 1
 	select Sound 'sound$'
 	soundextract$ = "'sound$'_part"
 	Rename... 'soundextract$'
 	## printline 'soundextract$'
+
+	## select Sound 'sound$'
+	## Extract part... 'startofsubset' 'endofsubset' rectangular 1.0 1
 
 	## Extraction of the temporary TextGrid object
 	select TextGrid 'grid$'
